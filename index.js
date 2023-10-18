@@ -26,11 +26,22 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const brandCollection = client.db("brandsDb").collection("brands");
+    const productsCollection = client.db("productsDb").collection("products");
 
     app.get("/brands", async (req, res) => {
       const cursor = await brandCollection.find().toArray();
       res.send(cursor);
     });
+
+    app.post('/products',async (req,res)=>{
+      const data=req.body;
+      const result = await productsCollection.insertOne(data);
+      res.send(result)
+   })
+   app.get("/products", async (req, res) => {
+    const cursor = await productsCollection.find().toArray();
+    res.send(cursor);
+  });
 
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
