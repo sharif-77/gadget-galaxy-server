@@ -27,7 +27,12 @@ async function run() {
   try {
     const brandCollection = client.db("brandsDb").collection("brands");
     const productsCollection = client.db("productsDb").collection("products");
+    const upComingsCollection = client.db("upcomingsDb").collection("upcomings");
 
+    app.get("/upcomings", async (req, res) => {
+      const cursor = await upComingsCollection.find().toArray();
+      res.send(cursor);
+    });
     app.get("/brands", async (req, res) => {
       const cursor = await brandCollection.find().toArray();
       res.send(cursor);
