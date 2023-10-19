@@ -28,6 +28,8 @@ async function run() {
     const brandCollection = client.db("brandsDb").collection("brands");
     const productsCollection = client.db("productsDb").collection("products");
     const upComingsCollection = client.db("upcomingsDb").collection("upcomings");
+    const cartCollection = client.db("cartsDb").collection("carts");
+
 
     app.get("/upcomings", async (req, res) => {
       const cursor = await upComingsCollection.find().toArray();
@@ -55,6 +57,23 @@ async function run() {
     res.send(result)
 
   })
+
+  app.post('/carts',async (req,res)=>{
+    const data=req.body;
+    const result = await cartCollection.insertOne(data);
+    res.send(result)
+ })
+ app.get("/carts", async (req, res) => {
+  const cursor = await cartCollection.find().toArray();
+  res.send(cursor);
+});
+app.delete('/carts/:id',async (req,res)=>{
+  const id=req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await cartCollection.deleteOne(query);
+  res.send(result)
+  console.log(id);
+})
 
   
 
