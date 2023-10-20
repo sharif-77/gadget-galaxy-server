@@ -27,9 +27,10 @@ async function run() {
   try {
     const brandCollection = client.db("brandsDb").collection("brands");
     const productsCollection = client.db("productsDb").collection("products");
-    const upComingsCollection = client.db("upcomingsDb").collection("upcomings");
+    const upComingsCollection = client
+      .db("upcomingsDb")
+      .collection("upcomings");
     const cartCollection = client.db("cartsDb").collection("carts");
-
 
     app.get("/upcomings", async (req, res) => {
       const cursor = await upComingsCollection.find().toArray();
@@ -40,79 +41,72 @@ async function run() {
       res.send(cursor);
     });
 
-    app.post('/products',async (req,res)=>{
-      const data=req.body;
+    app.post("/products", async (req, res) => {
+      const data = req.body;
       const result = await productsCollection.insertOne(data);
-      res.send(result)
-   })
-   app.get("/products", async (req, res) => {
-    const cursor = await productsCollection.find().toArray();
-    res.send(cursor);
-  });
+      res.send(result);
+    });
+    app.get("/products", async (req, res) => {
+      const cursor = await productsCollection.find().toArray();
+      res.send(cursor);
+    });
 
-  app.get('/products/:id',async (req,res)=>{
-    const id=req.params.id
-    const query = { _id: new ObjectId(id) };
-    const result = await productsCollection.findOne(query);
-    res.send(result)
+    app.get("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productsCollection.findOne(query);
+      res.send(result);
+    });
 
-  })
-
-
-  app.put('/products/:id',async (req,res)=>{
-    const id=req.params.id;
-    const dataForUpdate=req.body;
-    const {  name,
-      image,
-      brandName,
-      productType,
-      price,
-      description,
-      ratting}=dataForUpdate;
-    const filter = { _id: new ObjectId(id) };
-    const options = { upsert: true };
-    const updateDoc = {
-      $set: {
+    app.put("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const dataForUpdate = req.body;
+      const {
         name,
         image,
         brandName,
         productType,
         price,
         description,
-        ratting
-      
-      },
-    };
-    const result = await productsCollection.updateOne(filter, updateDoc, options);
-    res.send(result)
-  })
+        ratting,
+      } = dataForUpdate;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name,
+          image,
+          brandName,
+          productType,
+          price,
+          description,
+          ratting,
+        },
+      };
+      const result = await productsCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
 
-
-
-
-
-  app.post('/carts',async (req,res)=>{
-    const data=req.body;
-    const result = await cartCollection.insertOne(data);
-    res.send(result)
- })
- app.get("/carts", async (req, res) => {
-  const cursor = await cartCollection.find().toArray();
-  res.send(cursor);
-});
-app.delete('/carts/:id',async (req,res)=>{
-  const id=req.params.id;
-  const query = { _id: new ObjectId(id) };
-  const result = await cartCollection.deleteOne(query);
-  res.send(result)
-  console.log(id);
-})
-
-  
-
-
-
-   
+    app.post("/carts", async (req, res) => {
+      const data = req.body;
+      const result = await cartCollection.insertOne(data);
+      res.send(result);
+    });
+    app.get("/carts", async (req, res) => {
+      const cursor = await cartCollection.find().toArray();
+      res.send(cursor);
+    });
+    app.delete("/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+      console.log(id);
+    });
 
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
