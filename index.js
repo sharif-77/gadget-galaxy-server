@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Brands server is running wow");
+  res.send("Galaxy server is running wow");
 });
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -57,6 +57,39 @@ async function run() {
     res.send(result)
 
   })
+
+
+  app.put('/products/:id',async (req,res)=>{
+    const id=req.params.id;
+    const dataForUpdate=req.body;
+    const {  name,
+      image,
+      brandName,
+      productType,
+      price,
+      description,
+      ratting}=dataForUpdate;
+    const filter = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const updateDoc = {
+      $set: {
+        name,
+        image,
+        brandName,
+        productType,
+        price,
+        description,
+        ratting
+      
+      },
+    };
+    const result = await productsCollection.updateOne(filter, updateDoc, options);
+    res.send(result)
+  })
+
+
+
+
 
   app.post('/carts',async (req,res)=>{
     const data=req.body;
