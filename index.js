@@ -96,10 +96,13 @@ async function run() {
       const result = await cartCollection.insertOne(data);
       res.send(result);
     });
-    app.get("/carts", async (req, res) => {
-      const cursor = await cartCollection.find().toArray();
+    app.get("/carts/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const cursor = await cartCollection.find(query).toArray();
       res.send(cursor);
     });
+    
     app.delete("/carts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
